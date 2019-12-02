@@ -1,13 +1,16 @@
 close
 
-threshold = 0.01;
+threshold = 0.015;
 
-image = imread( './Damascus_2011.png' );
+image = imread( './harlem2.png' );
 
 % need to blur images first; resolution is too good
-blurred = imgaussfilt( image, 8 );
+blurred = imgaussfilt( image, 0.1 );
+
+% add blurring, enhancement(?), increase contrast, filter for noise?, ...
 
 gray_image = rgb2gray( blurred );
+% gray_image = blurred;
 
 edges = edge( gray_image, 'Prewitt', threshold );
 

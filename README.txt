@@ -4,7 +4,7 @@ outline of our game plan, etc...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Yesterday:
+...some day:
 
 - attempted to implement the gradient calculation outlined in the paper;
   after looking into this more, we figured out the method in the 
@@ -33,4 +33,16 @@ Yesterday:
 We got stuck here since we weren't sure what to do with the 
 information from the gradient. Chuyun wanted to ask Mariam for help
 but we didn't have a specific question to ask.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+12/2:
+
+- still stuck
+- edge detection still too sensitive, probably because of the noise?
+- came up with some ways to get around this; image enhancement, filter,
+	increase contrast?, blurring, etc.
+- going to meet with ta first to see if she has any insight before
+	we go too far in the wrong direction
+
 

@@ -1,13 +1,14 @@
 close all; clear;
 
-image = imread( './dc.png' );
+image = imread( './harlem2.png' );
 gray_image = rgb2gray( image );
 
 % imresize used to make the resolution worse, since detection is too sensitive
 % maybe blur is better?
-scale = 0.25;
-gray_image = imresize( gray_image, scale );
-gray_image = imresize( gray_image, 1/scale );
+% scale = 0.25;
+% gray_image = imresize( gray_image, scale );
+% gray_image = imresize( gray_image, 1/scale );
+gray_image = imgaussfilt( gray_image, 3 );
 
 % gradient using implementation in paper (it's not that good)
 % my_gx and my_gy defined at the bottom
@@ -16,8 +17,8 @@ Gy = my_gy( gray_image );
 G = sqrt( Gx.^2 + Gy.^2 );
 theta = atan( Gy./Gx );
 
-figure
-imshow( Gx + Gy )
+% figure
+% imshow( Gx + Gy )
 
 % gradient using built-in functions
 [gx,gy] = imgradientxy( gray_image, 'prewitt' );
@@ -33,8 +34,8 @@ cy=[-1 0 1;-1 0 1;-1 0 1];
 px=conv2(cx,gray_image);
 py=conv2(gray_image,cy);
 
-figure
-imshow( px + py );
+% figure
+% imshow( px + py );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
