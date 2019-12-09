@@ -45,4 +45,12 @@ but we didn't have a specific question to ask.
 - going to meet with ta first to see if she has any insight before
 	we go too far in the wrong direction
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+12/8:
+
+- did enhancement, open and close, some other stuff
+- need to play around with paramters of each step, maybe repeat some
+- try filtering different buildings and then adding results
+- try segmentation? not sure what effect this will have
+- image thinning might be useful to get rid of smaller features
