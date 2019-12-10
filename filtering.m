@@ -13,16 +13,70 @@ green_layer = image(:,:,2);
 blue_layer = image(:,:,3);
 
 %% enhancement parameters
-% red_layer = red_layer.^2;
-% green_layer = green_layer.^2;
-% blue_layer = blue_layer.^2;
-% enhancement
+red_layer = red_layer.^2;
+green_layer = green_layer.^2;
+% blue_layer = blue_layer.^3;
 
 % threshold = 0.5;
 % red_layer( red_layer < threshold ) = 0;
 % red_layer( red_layer >= threshold ) = (1/(1-threshold))*red_layer( red_layer >= threshold ) - threshold/(1-threshold);
 
 % red_layer( red_layer < 0.5 | red_layer > 0.7 ) = 0;
+
+%% just blue
+num_plots = 4;
+
+figure( 'Name', 'Just blue' )
+subplot(1, num_plots, 1)
+imshow( image(:,:,3) )
+title( 'Original' )
+
+% segmentation?
+max = 5;
+for i = 1:max
+    blue_layer( blue_layer >= (i-1)*1/max & blue_layer < i*1/max ) = (i-1)*1/max;
+end
+subplot(1, num_plots, 2)
+imshow( blue_layer )
+title( 'After Segmentation' )
+
+% thresholding
+blue_layer( blue_layer < .5 ) = 0;
+subplot(1, num_plots, 3)
+imshow( blue_layer )
+title( 'After Thresholding' )
+
+% open and close
+sebc = strel( 'disk', 3 );
+sebo = strel( 'disk', 15 );
+blue_layer = imclose( blue_layer, sebc );
+blue_layer = imopen( blue_layer, sebo );
+subplot( 1, num_plots, 4 )
+imshow( blue_layer )
+title( 'After Open and Close' )
+
+blue_layer( blue_layer > 0 ) = 255;
+
+%% just blue edges
+num_plots = 2;
+figure( 'Name', 'Just blue edges' )
+subplot( 1, num_plots, 1 )
+imshow( image )
+title( 'Original' )
+
+% edge detection
+edge_t = 0.;
+blue_edges = edge( blue_layer, 'Prewitt', edge_t );
+subplot( 1, num_plots, 2 )
+imshow( blue_edges )
+title( 'After edge detection' )
+
+% close edges?
+% sebo = strel( 'disk', 10 );
+% blue_edges = imclose( blue_edges, sebo );
+% subplot( 1, num_plots, 3 )
+% imshow( blue_edges )
+% title( 'After closing' )
 
 %% open and close parameters
 % not sure if we need to close
