@@ -8,20 +8,21 @@ image = double( image )/255;
 % title( 'Original' )
 
 %% different color layers
+copy = image;
 red_layer = image(:,:,1);
 green_layer = image(:,:,2);
 blue_layer = image(:,:,3);
 
 %% enhancement parameters
-red_layer = red_layer.^2;
-green_layer = green_layer.^2;
+% red_layer = red_layer.^2;
+% green_layer = green_layer.^2;
 % blue_layer = blue_layer.^3;
 
 % threshold = 0.5;
 % red_layer( red_layer < threshold ) = 0;
 % red_layer( red_layer >= threshold ) = (1/(1-threshold))*red_layer( red_layer >= threshold ) - threshold/(1-threshold);
 
-% red_layer( red_layer < 0.5 | red_layer > 0.7 ) = 0;
+% red_layer( red_layer < 0.4 | red_layer > 0.6 ) = 0;
 
 %% just blue
 num_plots = 4;
@@ -57,68 +58,93 @@ title( 'After Open and Close' )
 
 blue_layer( blue_layer > 0 ) = 255;
 
-%% just blue edges
-num_plots = 2;
-figure( 'Name', 'Just blue edges' )
+%% just green
+num_plots = 3;
+figure( 'Name', 'Just Green' )
 subplot( 1, num_plots, 1 )
-imshow( image )
+imshow( image(:,:,2) )
 title( 'Original' )
 
-% edge detection
-edge_t = 0.;
-blue_edges = edge( blue_layer, 'Prewitt', edge_t );
+% segmentation?
+% max = 10;
+% for i = 1:max
+%     green_layer( green_layer >= (i-1)*1/max & green_layer < i*1/max ) = (i-1)*1/max;
+% end
+% subplot(1, num_plots, 2)
+% imshow( green_layer )
+% title( 'After Segmentation' )
+
+% thresholding
+green_layer( green_layer < 0.5 | green_layer > 0.7 ) = 0;
+
 subplot( 1, num_plots, 2 )
+imshow( green_layer )
+title( 'Thresholding' )
+
+% open and close parameters
+sego = strel( 'disk', 10 ); % for opening
+segc = strel('disk', 0 ); % for closing
+green_layer = imopen( green_layer, sego );
+green_layer = imclose( green_layer, sego );
+subplot( 1, num_plots, 3 )
+imshow( green_layer )
+title( 'Open and close' )
+
+green_layer( green_layer > 0 ) = 255;
+
+%% edge width
+sed = strel( 'disk', 3 );
+
+%% just blue edges
+edge_t = 0.05;
+blue_edges = edge( blue_layer, 'Prewitt', edge_t );
+
+% "dilate" edges to make them bigger
+blue_edges = imdilate( blue_edges, sed );
+
+num_plots = 2;
+figure( 'Name', 'After edge detection (with blue layer)' )
+subplot( 1, num_plots, 1 )
 imshow( blue_edges )
-title( 'After edge detection' )
+title( 'Edges detected' )
 
-% close edges?
-% sebo = strel( 'disk', 10 );
-% blue_edges = imclose( blue_edges, sebo );
-% subplot( 1, num_plots, 3 )
-% imshow( blue_edges )
-% title( 'After closing' )
+% make edges appear blue in image
+image(:,:,3) = image(:,:,3) + blue_edges;
+image(:,:,2) = image(:,:,2) .* ( blue_edges == 0 );
+image(:,:,1) = image(:,:,1) .* ( blue_edges == 0 );
 
-%% open and close parameters
-% not sure if we need to close
-% set radius to 0 for no effect
-seo = strel( 'disk', 0 ); % for opening
-sec = strel('disk', 0 ); % for closing
-
-%% applying processing
-for i = 1:1
-    % open and close
-%     red_layer = imopen( red_layer, seo );
-    red_layer = imclose( red_layer, sec );
-    red_layer = imopen( red_layer, seo );
-%     green_layer = imclose( imopen( green_layer, seo ), sec );
-%     blue_layer = imclose( imopen( blue_layer, seo ), sec );
-end
-
-%% show effects of processing on each layer
-dummy = zeros( size( image(:,:,1) ) );
-red_image = cat( 3, red_layer, dummy, dummy );
-green_image = cat( 3, dummy, green_layer, dummy );
-blue_image = cat( 3, dummy, dummy, blue_layer );
-
-% figure( 'Name', 'Effect of Processing' )
-% subplot(121)
-% imshow( image(:,:,1) )
-% title( 'Original' )
-% subplot(122)
-% imshow( red_layer )
-% title( 'Enhanced' )
-
-figure( 'Name', 'Color Split' )
-subplot(141)
+subplot( 1, num_plots, 2 )
 imshow( image )
+title( 'Detected Buildings' )
+
+%% just green edges
+edge_t = 0.05;
+green_edges = edge( green_layer, 'Prewitt', edge_t );
+
+% "dilate" edges to make them bigger
+green_edges = imdilate( green_edges, sed );
+
+num_plots = 2;
+figure( 'Name', 'After edge detection (with green layer)' )
+subplot( 1, num_plots, 1 )
+imshow( green_edges )
+title( 'Edges detected' )
+
+% make edges appear green in image
+image(:,:,2) = image(:,:,2) + green_edges;
+image(:,:,3) = image(:,:,3) .* ( green_edges == 0 );
+image(:,:,1) = image(:,:,1) .* ( green_edges == 0 );
+
+subplot( 1, num_plots, 2 )
+imshow( image )
+title( 'Detected Buildings' )
+
+%% final result
+figure( 'Name', 'All detected buildings' )
+subplot(121)
+imshow( copy )
 title( 'Original' )
-subplot(142)
-imshow( red_image )
-title( 'Red' )
-subplot(143)
-imshow( green_image )
-title( 'Green' )
-subplot(144)
-imshow( blue_image )
-title( 'Blue' )
+subplot(122)
+imshow( image )
+title( 'Detected Buildings' )
 
