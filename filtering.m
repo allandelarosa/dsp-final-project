@@ -24,8 +24,21 @@ blue_layer = image(:,:,3);
 
 % red_layer( red_layer < 0.4 | red_layer > 0.6 ) = 0;
 
+%% some histograms
+n = 100; % number of bins
+figure( 'Name', 'Histograms' )
+subplot(131)
+histogram( red_layer, n )
+title( 'Red' )
+subplot(132)
+histogram( green_layer, n )
+title( 'Green' )
+subplot(133)
+histogram( blue_layer, n )
+title( 'Blue' )
+
 %% just blue
-num_plots = 4;
+num_plots = 5;
 
 figure( 'Name', 'Just blue' )
 subplot(1, num_plots, 1)
@@ -47,12 +60,18 @@ subplot(1, num_plots, 3)
 imshow( blue_layer )
 title( 'After Thresholding' )
 
+% fill holes
+blue_layer = imfill( blue_layer );
+subplot( 1, num_plots, 4 )
+imshow( blue_layer )
+title( 'After hole filling' )
+
 % open and close
-sebc = strel( 'disk', 3 );
-sebo = strel( 'disk', 15 );
+sebc = strel( 'disk', 0 );
+sebo = strel( 'disk', 10 );
 blue_layer = imclose( blue_layer, sebc );
 blue_layer = imopen( blue_layer, sebo );
-subplot( 1, num_plots, 4 )
+subplot( 1, num_plots, 5 )
 imshow( blue_layer )
 title( 'After Open and Close' )
 
@@ -80,6 +99,8 @@ green_layer( green_layer < 0.5 | green_layer > 0.7 ) = 0;
 subplot( 1, num_plots, 2 )
 imshow( green_layer )
 title( 'Thresholding' )
+
+% hole filling does not help
 
 % open and close parameters
 sego = strel( 'disk', 10 ); % for opening
