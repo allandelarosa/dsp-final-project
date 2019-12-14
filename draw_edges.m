@@ -2,6 +2,9 @@
 % third arg is color of edges
 % fourth arg is figure name
 
+% if edges of different colors are desired, can also input
+% edges as a MxNxj matrix with a 1xj matric to indicate colors
+
 function draw_edges = draw_edges( image, edges, c, fig_name )
 
 figure( 'Name', fig_name )
@@ -10,13 +13,15 @@ imshow( image )
 title( 'Original' )
 
 for i = 1:3
+    for j = 1: length(c)
     layer = image(:,:,i);
-    if i == c
-        layer( edges > 0 ) = 1;
-    else
-        layer( edges > 0 ) = 0;
+        if i == c(j)
+            layer( edges(:,:,j) > 0 ) = 1;
+        else
+            layer( edges(:,:,j) > 0 ) = 0;
+        end
+        image(:,:,i) = layer;
     end
-    image(:,:,i) = layer;
 end
 
 subplot(122)

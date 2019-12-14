@@ -8,34 +8,12 @@ image = double( image )/255;
 % title( 'Original' )
 
 %% different color layers
-copy = image;
 red_layer = image(:,:,1);
 green_layer = image(:,:,2);
 blue_layer = image(:,:,3);
 
-%% enhancement parameters
-% red_layer = red_layer.^2;
-% green_layer = green_layer.^2;
-% blue_layer = blue_layer.^3;
-
-% threshold = 0.5;
-% red_layer( red_layer < threshold ) = 0;
-% red_layer( red_layer >= threshold ) = (1/(1-threshold))*red_layer( red_layer >= threshold ) - threshold/(1-threshold);
-
-% red_layer( red_layer < 0.4 | red_layer > 0.6 ) = 0;
-
 %% some histograms
-n = 100; % number of bins
-figure( 'Name', 'Histograms' )
-subplot(131)
-histogram( red_layer, n )
-title( 'Red' )
-subplot(132)
-histogram( green_layer, n )
-title( 'Green' )
-subplot(133)
-histogram( blue_layer, n )
-title( 'Blue' )
+colorsplit( image, 'Dubai Colors' );
 
 %% just blue
 num_plots = 5;
@@ -123,20 +101,6 @@ blue_edges = edge( blue_layer, 'Prewitt', edge_t );
 % "dilate" edges to make them bigger
 blue_edges = imdilate( blue_edges, sed );
 
-num_plots = 2;
-figure( 'Name', 'After edge detection (with blue layer)' )
-subplot( 1, num_plots, 1 )
-imshow( blue_edges )
-title( 'Edges detected' )
-
-% make edges appear blue in image
-image(:,:,3) = image(:,:,3) + blue_edges;
-image(:,:,2) = image(:,:,2) .* ( blue_edges == 0 );
-image(:,:,1) = image(:,:,1) .* ( blue_edges == 0 );
-
-subplot( 1, num_plots, 2 )
-imshow( image )
-title( 'Detected Buildings' )
 
 %% just green edges
 edge_t = 0.05;
@@ -145,27 +109,8 @@ green_edges = edge( green_layer, 'Prewitt', edge_t );
 % "dilate" edges to make them bigger
 green_edges = imdilate( green_edges, sed );
 
-num_plots = 2;
-figure( 'Name', 'After edge detection (with green layer)' )
-subplot( 1, num_plots, 1 )
-imshow( green_edges )
-title( 'Edges detected' )
-
-% make edges appear green in image
-image(:,:,2) = image(:,:,2) + green_edges;
-image(:,:,3) = image(:,:,3) .* ( green_edges == 0 );
-image(:,:,1) = image(:,:,1) .* ( green_edges == 0 );
-
-subplot( 1, num_plots, 2 )
-imshow( image )
-title( 'Detected Buildings' )
 
 %% final result
-figure( 'Name', 'All detected buildings' )
-subplot(121)
-imshow( copy )
-title( 'Original' )
-subplot(122)
-imshow( image )
-title( 'Detected Buildings' )
+draw_edges( image, cat(3,blue_edges,green_edges), [3 2], ...
+    'Dubai Detected Buildings' );
 
