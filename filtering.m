@@ -1,6 +1,6 @@
 close all; clear; clc
 
-image = imread( './Dubai_1.png' );
+image = imread( './Dubai_4.png' );
 image = double( image )/255;
 
 % figure( 'Name', 'Original' )
@@ -11,6 +11,23 @@ image = double( image )/255;
 red_layer = image(:,:,1);
 green_layer = image(:,:,2);
 blue_layer = image(:,:,3);
+
+%% enhancement
+% find average pizel value in gray layer
+% gray = rgb2gray( image );
+% avg = mean( gray, 'all' );
+% 
+% gray( gray > avg ) = max( gray, [], 'all' );
+% gray( gray <= avg ) = max( gray, [], 'all' )/(avg+0.01)*gray( gray <= avg );
+% 
+% figure
+% subplot(121)
+% imshow( image )
+% title( 'Original' )
+% subplot(122)
+% imshow( gray )
+% title( 'Gray Scale Enhancement' )
+% enhancement did not help
 
 %% some histograms
 colorsplit( image, 'Dubai Colors' );
@@ -42,16 +59,16 @@ title( 'After Thresholding' )
 blue_layer = imfill( blue_layer );
 subplot( 1, num_plots, 4 )
 imshow( blue_layer )
-title( 'After hole filling' )
+title( 'After Hole Filling' )
 
 % open and close
-sebc = strel( 'disk', 0 );
+% sebc = strel( 'disk', 0 );
 sebo = strel( 'disk', 10 );
-blue_layer = imclose( blue_layer, sebc );
+% blue_layer = imclose( blue_layer, sebc );
 blue_layer = imopen( blue_layer, sebo );
 subplot( 1, num_plots, 5 )
 imshow( blue_layer )
-title( 'After Open and Close' )
+title( 'After Opening' )
 
 blue_layer( blue_layer > 0 ) = 255;
 
@@ -76,18 +93,18 @@ green_layer( green_layer < 0.5 | green_layer > 0.7 ) = 0;
 
 subplot( 1, num_plots, 2 )
 imshow( green_layer )
-title( 'Thresholding' )
+title( 'After Thresholding' )
 
 % hole filling does not help
 
 % open and close parameters
 sego = strel( 'disk', 10 ); % for opening
-segc = strel('disk', 0 ); % for closing
+% segc = strel('disk', 0 ); % for closing
 green_layer = imopen( green_layer, sego );
-green_layer = imclose( green_layer, sego );
+% green_layer = imclose( green_layer, sego );
 subplot( 1, num_plots, 3 )
 imshow( green_layer )
-title( 'Open and close' )
+title( 'After Opening' )
 
 green_layer( green_layer > 0 ) = 255;
 
